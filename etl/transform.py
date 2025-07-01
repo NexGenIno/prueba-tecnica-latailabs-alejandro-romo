@@ -1,6 +1,9 @@
 import re
 from typing import List, Dict
 
+
+regex = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+
 def valid_email(email: str) -> bool:
     """
 
@@ -12,8 +15,9 @@ def valid_email(email: str) -> bool:
     Returns:
         bool: true si email es válido, false en caso contrario.
     """
-
-    regex = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+    if not email:
+        return False
+    
     return bool(regex.match(email))
 
 def concat_address(data_address: Dict) -> str:
