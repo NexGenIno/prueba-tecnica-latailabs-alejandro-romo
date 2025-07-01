@@ -14,7 +14,7 @@ def load_users_to_csv(data: List[Dict], output_file_path: str, fields_names: Lis
         fields_names(List[str]): Lista de str con los nombres del los encabezados del archivo.
     """
 
-    output_dir = output_file_path
+    output_dir = os.path.dirname(output_file_path)
 
     # Crear el directorio en caso de no existir
     if output_dir and not os.path.exists(output_dir):
