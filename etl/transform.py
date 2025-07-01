@@ -1,26 +1,10 @@
 import re
 from typing import List, Dict
+from .models import User, Address
 
 
-regex = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
 
-def valid_email(email: str) -> bool:
-    """
-
-    Comprobar si un email es válido usando un regex.
-
-    Args:
-        email (str): email a validar.
-    
-    Returns:
-        bool: true si email es válido, false en caso contrario.
-    """
-    if not email:
-        return False
-    
-    return bool(regex.match(email))
-
-def concat_address(data_address: Dict) -> str:
+def concat_address(data_address: Address) -> str:
     """
 
     Une los campos street, suite, city y zipcode en un solo str
@@ -32,15 +16,10 @@ def concat_address(data_address: Dict) -> str:
         str: Dirección separada por comas.
     """
 
-    street = data_address.get("street", "")
-    suite = data_address.get("suite", "")
-    city = data_address.get("city", "")
-    zipcode = data_address.get("zipcode", "")
+    parts = [data_address.street, data_address.suite, data_address.city, data_address.zipcode]
+    return ", ".join(part for part in parts if part)
 
-    clean_address_data = [segment for segment in [street, suite, city, zipcode] if segment]
-    return ", ".join(clean_address_data)
-
-def clean_users_data(users: List[Dict]) -> List[Dict]:
+def clean_users_data(users: List[User]) -> List[Dict]:
     """
 
     Aplica transformación a los datos de usuario según reglas de negocio.
@@ -56,28 +35,18 @@ def clean_users_data(users: List[Dict]) -> List[Dict]:
     completed_ids: set = set() # Conjunto para evitar IDs duplicados
 
     for user in users:
-        user_id = user.get("id")
-        name = user.get("name")
-        email = user.get("email")
-        address = user.get("address", {})
+        
 
-        if user_id is None or user_id in completed_ids:
+        if user.id is None or user.id in completed_ids:
             continue
 
-        if not valid_email(email):
-            continue
-
-        completed_ids.add(user_id)
-
-        uppercase_name = str(name).upper() if name else ""
-
-        full_address = concat_address(address)
+        completed_ids.add(user.id)
 
         transformed_users.append({
-            "id": user_id,
-            "name": uppercase_name,
-            "email": email,
-            "full_address": full_address
+            "id": user.id,
+            "name": user.name.upper(),
+            "email": user.email,
+            "full_address": concat_address(user.address)
         })
     
     return transformed_users

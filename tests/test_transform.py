@@ -1,17 +1,11 @@
 import pytest
-from etl.transform import clean_users_data, valid_email, concat_address
+from pydantic import ValidationError
+from etl.transform import clean_users_data,  concat_address
+from etl.models import User, Address
 from typing import List, Dict
 
-# Pruebas funciones auxuliares
+# Pruebas función axiliar de concatenacion
 
-def test_valid_email():
-    """a validacion de correos electronicos"""
-    assert valid_email("ejemplo@ejemplo.com") is True
-    assert valid_email("Jondoe@domain.co.uk") is True
-    assert valid_email("emailémail") is False
-    assert valid_email("prueba@prueba") is False
-    # Valores nulos
-    assert valid_email(None) is False
 
 def test_concat_address():
     """Prueba que la funcion concatene correctamente la diección"""
@@ -21,17 +15,16 @@ def test_concat_address():
         "city": "Gwenborough", 
         "zipcode": "92998-3874"
     }
+    address_model = Address.model_validate(address_data)
     expected_value = "Kulas Light, Apt. 556, Gwenborough, 92998-3874"
-    assert concat_address(address_data) == expected_value
+    assert concat_address(address_model) == expected_value
 
 def test_concat_address_values_null():
     """Valida que la funcion concatene la direccion un si faltan datos"""
-    address_data = {
-        "street": "Kulas Light", 
-        "suite": "Apt. 556",
-    }
-    expected_value = "Kulas Light, Apt. 556"
-    assert concat_address(address_data) == expected_value
+    full_address_data = {"street": "Main St", "suite": "", "city": "Anytown", "zipcode": ""}
+    address_model = Address.model_validate(full_address_data)
+    expected_value = "Main St, Anytown"
+    assert concat_address(address_model) == expected_value
 
 # Pruebas para la funcion principal
 
@@ -141,7 +134,16 @@ def sample_data():
 def test_transform_flow(sample_data: List[Dict]):
     """Prueba completa del flujo del ETL"""
 
-    transformed_data = clean_users_data(sample_data)
+    # simular extraccion para validar los datos
+    extract_users = []
+
+    for user_dict in sample_data:
+        try:
+            extract_users.append(User.model_validate(user_dict))
+        except ValidationError:
+            pass
+
+    transformed_data = clean_users_data(extract_users)
 
     # validar que el umero de registros que debe retornar sea el esperado
     assert len(transformed_data) == 2

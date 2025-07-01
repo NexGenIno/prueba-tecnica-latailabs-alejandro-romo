@@ -1,5 +1,6 @@
 import requests
 from typing import List, Dict
+from .models import User
 
 
 def extract_users(url: str) -> List[Dict]:
@@ -18,8 +19,11 @@ def extract_users(url: str) -> List[Dict]:
     try:
         response = requests.get(url)
         response.raise_for_status() # Cachar error de status en la peticion al api
+        raw_data = response.json()
 
-        return response.json()
+        valid_users = [User.model_validate(user) for user in raw_data]
+
+        return valid_users
     except requests.exceptions.RequestException as e:
         print(f"Error al intentar descargar la información: {e}")
         return []
