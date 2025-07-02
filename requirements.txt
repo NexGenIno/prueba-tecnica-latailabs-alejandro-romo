@@ -1,3 +1,4 @@
 pydantic
+email-validator
 requests
 pytest
