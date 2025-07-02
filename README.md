@@ -42,7 +42,7 @@ Sigue estos pasos para poner en marcha el proyecto. Se recomienda usar un entorn
 ```bash
 # Clona este repositorio o descarga los archivos
 # git clone https://github.com/NexGenIno/prueba-tecnica-latailabs-alejandro-romo.git
-# cd etl_users_project
+# cd prueba-tecnica-latailabs-alejandro-romo
 
 # Crea un entorno virtual
 python -m venv venv
