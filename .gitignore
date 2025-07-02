@@ -1,0 +1,26 @@
+# Entorno Virtual
+.venv/
+venv/
+env/
+.env
+
+# Caché de Python
+__pycache__/
+*.pyc
+
+# Archivos generados
+output/
+*.log
+
+# Archivos de Testing
+.pytest_cache/
+.coverage
+coverage.xml
+
+# Configuración de Editores
+.vscode/
+.idea/
+
+# Archivos de Sistema Operativo
+.DS_Store
+Thumbs.db
