@@ -1,6 +1,11 @@
+import logging
 import csv
 import os
 from typing import List, Dict
+
+
+# instancia especifica de logging para el modulo
+logger = logging.getLogger(__name__)
 
 
 def load_users_to_csv(data: List[Dict], output_file_path: str, fields_names: List[str]) -> None:
@@ -18,6 +23,7 @@ def load_users_to_csv(data: List[Dict], output_file_path: str, fields_names: Lis
 
     # Crear el directorio en caso de no existir
     if output_dir and not os.path.exists(output_dir):
+        logger.info(f"Creando direcctorio: {output_dir}")
         os.makedirs(output_dir)
     
     try:
@@ -26,9 +32,9 @@ def load_users_to_csv(data: List[Dict], output_file_path: str, fields_names: Lis
             writer.writeheader()
             writer.writerows(data)
     except IOError as e:
-        print(f"Error al escribir csv: {e}")
+        logger.error(f"Error al escribir csv: {e}")
     except Exception as e:
-        print(f"Error inesperado: {e}")
+        logger.error(f"Error inesperado: {e}")
 
 
 if __name__ == "__main__":
@@ -57,6 +63,6 @@ if __name__ == "__main__":
     if os.path.exists(OUTPUT_FILE):
         with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
             lines = f.readlines()
-            print(f"primeras líneas del archivo: \n" + "".join(lines[:2]))
+            logger.info(f"primeras líneas del archivo: \n" + "".join(lines[:2]))
     else:
-        print(f"Error no se encontro el archivo: {OUTPUT_FILE}")
+        logger.error(f"Error no se encontro el archivo: {OUTPUT_FILE}")

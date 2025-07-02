@@ -1,6 +1,10 @@
-import re
+import logging
 from typing import List, Dict
 from .models import User, Address
+
+
+# instancia especifica de logging para el modulo
+logger = logging.getLogger(__name__)
 
 
 
@@ -38,6 +42,7 @@ def clean_users_data(users: List[User]) -> List[Dict]:
         
 
         if user.id is None or user.id in completed_ids:
+            logger.warning(f"Usuario con id: {user.id} duplicado")
             continue
 
         completed_ids.add(user.id)
@@ -49,6 +54,7 @@ def clean_users_data(users: List[User]) -> List[Dict]:
             "full_address": concat_address(user.address)
         })
     
+    logger.info(f"Transformacion de datos exitosa, total de registrs: {len(transformed_users)}")
     return transformed_users
 
 
@@ -129,6 +135,6 @@ if __name__ == "__main__":
     transformed = clean_users_data(users)
 
     import json
-    print(json.dumps(transformed, indent=2))
+    logger.info(json.dumps(transformed, indent=2))
 
     assert len(transformed) == 2 # Validar que solo tienen que ser 2 registros

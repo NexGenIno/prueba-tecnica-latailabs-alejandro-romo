@@ -1,6 +1,11 @@
+import logging
 import requests
 from typing import List, Dict
 from .models import User
+
+
+# instancia especifica de logging para el modulo
+logger = logging.getLogger(__name__)
 
 
 def extract_users(url: str) -> List[Dict]:
@@ -25,7 +30,7 @@ def extract_users(url: str) -> List[Dict]:
 
         return valid_users
     except requests.exceptions.RequestException as e:
-        print(f"Error al intentar descargar la información: {e}")
+        logger.error(f"Error al intentar descargar la información: {e}")
         return []
     
 
@@ -34,6 +39,6 @@ if __name__ == "__main__":
     data_users = extract_users(URL_API)
 
     if data_users:
-        print(f"Se encontraron: {len(data_users)} usuarios")
+        logger.info(f"Se encontraron: {len(data_users)} usuarios")
     else:
-        print("No se pudieron descagar datos desde la API")
+        logger.error("No se pudieron descagar datos desde la API")
